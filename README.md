@@ -50,7 +50,7 @@ scoreboard-app/
 
 ---
 
-## 📥 4. Download and Open in VS Code
+##  4. Download and Open in VS Code
 
 1. Click **Code → Download ZIP** on GitHub.
 2. Extract the ZIP file.
@@ -60,7 +60,7 @@ scoreboard-app/
 
 ---
 
-## 🐍 5. Python Setup
+##  5. Python Setup
 
 If your app uses Flask or similar, install dependencies:
 
