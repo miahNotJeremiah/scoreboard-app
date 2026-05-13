@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – Basketball Scoreboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body class="admin-page">
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <span class="admin-logo">🏀 ScoreBoard Pro</span>
+      <nav class="admin-nav">
+        <a href="/scoreboard" class="btn btn-ghost btn-sm" target="_blank">👁 Live View</a>
+        <a href="/setup" class="btn btn-secondary btn-sm">⚙ Setup</a>
+        <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-main">
+
+    <!-- Mini Scoreboard Preview -->
+    <div class="admin-preview-bar">
+      <div class="preview-team preview-team1">
+        <span class="preview-team-name" id="prev-team1-name">{{ game.team1.name }}</span>
+        <span class="preview-score" id="prev-team1-score">{{ game.team1.score }}</span>
+      </div>
+      <div class="preview-center">
+        <span class="preview-period" id="prev-period">{{ game.period_label }}</span>
+        <span class="preview-clock" id="prev-clock">{{ game.time_remaining }}</span>
+      </div>
+      <div class="preview-team preview-team2">
+        <span class="preview-score" id="prev-team2-score">{{ game.team2.score }}</span>
+        <span class="preview-team-name" id="prev-team2-name">{{ game.team2.name }}</span>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+
+      <!-- ── Team 1 Controls ── -->
+      <div class="admin-card" id="admin-team1-card">
+        <div class="card-team-strip" id="strip1" data-color="{{ game.team1.color }}"></div>
+        <h2 class="card-title" id="admin-t1-name">{{ game.team1.name }}</h2>
+        <div class="big-score" id="admin-t1-score">{{ game.team1.score }}</div>
+
+        <div class="score-btns">
+          <button class="btn btn-score" onclick="addScore('team1', 1)" id="t1-add1">+1</button>
+          <button class="btn btn-score" onclick="addScore('team1', 2)" id="t1-add2">+2</button>
+          <button class="btn btn-score" onclick="addScore('team1', 3)" id="t1-add3">+3</button>
+          <button class="btn btn-undo" onclick="addScore('team1', -1)" id="t1-sub1">−1</button>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">⚠️ Fouls</span>
+            <span class="stat-val" id="admin-t1-fouls">{{ game.team1.fouls }}</span>
+            <div class="stat-controls">
+              <button class="btn btn-xs" onclick="addFoul('team1','add')" id="t1-foul-add">+</button>
+              <button class="btn btn-xs btn-ghost" onclick="addFoul('team1','remove')" id="t1-foul-rem">−</button>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">⏸ Timeouts</span>
+            <span class="stat-val" id="admin-t1-timeouts">{{ game.team1.timeouts }}</span>
+            <div class="stat-controls">
+              <button class="btn btn-xs btn-warning" onclick="useTimeout('team1')" id="t1-timeout">Use</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Players -->
+        <div class="player-section">
+          <h3 class="player-section-title">Players</h3>
+          <div id="admin-players-team1" class="player-admin-list">
+            {% for player in game.team1.players %}
+            <div class="player-admin-row">
+              <span class="player-num">#{{ player.number }}</span>
+              <span class="player-nm">{{ player.name }}</span>
+              <span class="player-fl" id="t1p{{ loop.index0 }}-fouls">{{ player.fouls }} fls</span>
+              <button class="btn btn-xs btn-warning" data-team="team1" data-index="{{ loop.index0 }}"
+                id="t1p{{ loop.index0 }}-btn" onclick="playerFoul(this.dataset.team, Number(this.dataset.index))">Foul</button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Center Controls ── -->
+      <div class="admin-card admin-center-card">
+        <h2 class="card-title">⏱ Game Control</h2>
+
+        <div class="clock-display" id="center-clock">{{ game.time_remaining }}</div>
+
+        <div class="clock-inputs">
+          <input type="number" id="clock-min" min="0" max="10" value="10" class="clock-input" />
+          <span class="clock-sep">:</span>
+          <input type="number" id="clock-sec" min="0" max="59" value="0" class="clock-input" />
+          <button class="btn btn-secondary" onclick="setClock()" id="set-clock-btn">Set</button>
+        </div>
+
+        <button class="btn btn-success btn-full" id="timer-toggle-btn" onclick="toggleTimer()"
+          style="margin-top: 0.75rem; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.03em;">
+          ▶ Start Timer
+        </button>
+
+        <div class="timer-controls">
+          <button class="btn btn-start btn-full" onclick="startTimer()" id="start-timer-btn">▶ Start</button>
+          <button class="btn btn-pause btn-full" onclick="pauseTimer()" id="pause-timer-btn" disabled>⏸ Pause</button>
+          <button class="btn btn-stop btn-full" onclick="stopTimer()" id="stop-timer-btn" disabled>⏹ Stop</button>
+        </div>
+
+        <div class="period-controls">
+          <div class="period-display">
+            <span class="period-label-sm">Period</span>
+            <span class="period-val" id="center-period">{{ game.period_label }}</span>
+          </div>
+          <button class="btn btn-primary" onclick="nextQuarter()" id="next-quarter-btn">Next Quarter →</button>
+        </div>
+
+        <div class="game-actions">
+          <button class="btn btn-danger btn-full" onclick="resetGame()" id="reset-game-btn">
+            🔄 Reset Game
+          </button>
+        </div>
+
+        <div class="quick-links">
+          <a href="/setup" class="btn btn-ghost btn-full" id="goto-setup-btn">⚙ Edit Teams / Players</a>
+          <a href="/scoreboard" class="btn btn-ghost btn-full" target="_blank" id="goto-scoreboard-btn">👁 Open Live
+            Scoreboard</a>
+        </div>
+      </div>
+
+      <!-- ── Team 2 Controls ── -->
+      <div class="admin-card" id="admin-team2-card">
+        <div class="card-team-strip" id="strip2" data-color="{{ game.team2.color }}"></div>
+        <h2 class="card-title" id="admin-t2-name">{{ game.team2.name }}</h2>
+        <div class="big-score" id="admin-t2-score">{{ game.team2.score }}</div>
+
+        <div class="score-btns">
+          <button class="btn btn-score" onclick="addScore('team2', 1)" id="t2-add1">+1</button>
+          <button class="btn btn-score" onclick="addScore('team2', 2)" id="t2-add2">+2</button>
+          <button class="btn btn-score" onclick="addScore('team2', 3)" id="t2-add3">+3</button>
+          <button class="btn btn-undo" onclick="addScore('team2', -1)" id="t2-sub1">−1</button>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-item">
+            <span class="stat-label">⚠️ Fouls</span>
+            <span class="stat-val" id="admin-t2-fouls">{{ game.team2.fouls }}</span>
+            <div class="stat-controls">
+              <button class="btn btn-xs" onclick="addFoul('team2','add')" id="t2-foul-add">+</button>
+              <button class="btn btn-xs btn-ghost" onclick="addFoul('team2','remove')" id="t2-foul-rem">−</button>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">⏸ Timeouts</span>
+            <span class="stat-val" id="admin-t2-timeouts">{{ game.team2.timeouts }}</span>
+            <div class="stat-controls">
+              <button class="btn btn-xs btn-warning" onclick="useTimeout('team2')" id="t2-timeout">Use</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Players -->
+        <div class="player-section">
+          <h3 class="player-section-title">Players</h3>
+          <div id="admin-players-team2" class="player-admin-list">
+            {% for player in game.team2.players %}
+            <div class="player-admin-row">
+              <span class="player-num">#{{ player.number }}</span>
+              <span class="player-nm">{{ player.name }}</span>
+              <span class="player-fl" id="t2p{{ loop.index0 }}-fouls">{{ player.fouls }} fls</span>
+              <button class="btn btn-xs btn-warning" data-team="team2" data-index="{{ loop.index0 }}"
+                id="t2p{{ loop.index0 }}-btn" onclick="playerFoul(this.dataset.team, Number(this.dataset.index))">Foul</button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Scoreboard – Basketball</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body class="scoreboard-page">
+
+  <header class="sb-header">
+    <div class="sb-header-inner">
+      <span class="sb-sport-label">🏀 BASKETBALL</span>
+      <span class="sb-live-badge" id="live-badge">● LIVE</span>
+      <a href="/login" class="btn btn-ghost btn-sm">Admin</a>
+    </div>
+  </header>
+
+  <main class="sb-main">
+
+    <!-- Quarter / Period -->
+    <div class="sb-period-bar">
+      <span class="sb-period-label" id="period-label">{{ game.period_label }}</span>
+      <span class="sb-clock" id="clock">{{ game.time_remaining }}</span>
+    </div>
+
+    <!-- Main score display -->
+    <div class="sb-score-section">
+
+      <!-- Team 1 -->
+      <div class="sb-team" id="sb-team1">
+        <div class="sb-team-color" id="team1-color" data-color="{{ game.team1.color }}"></div>
+        <h2 class="sb-team-name" id="team1-name">{{ game.team1.name }}</h2>
+        <div class="sb-score" id="team1-score">{{ game.team1.score }}</div>
+        <div class="sb-team-stats">
+          <span class="sb-stat-badge fouls-badge">
+            <span class="sb-stat-icon">⚠️</span>
+            Fouls: <strong id="team1-fouls">{{ game.team1.fouls }}</strong>
+          </span>
+          <span class="sb-stat-badge timeout-badge">
+            <span class="sb-stat-icon">⏸</span>
+            T/O: <strong id="team1-timeouts">{{ game.team1.timeouts }}</strong>
+          </span>
+        </div>
+      </div>
+
+      <!-- VS Divider -->
+      <div class="sb-vs">
+        <span>VS</span>
+      </div>
+
+      <!-- Team 2 -->
+      <div class="sb-team sb-team-right" id="sb-team2">
+        <div class="sb-team-color" id="team2-color" data-color="{{ game.team2.color }}"></div>
+        <h2 class="sb-team-name" id="team2-name">{{ game.team2.name }}</h2>
+        <div class="sb-score" id="team2-score">{{ game.team2.score }}</div>
+        <div class="sb-team-stats">
+          <span class="sb-stat-badge fouls-badge">
+            <span class="sb-stat-icon">⚠️</span>
+            Fouls: <strong id="team2-fouls">{{ game.team2.fouls }}</strong>
+          </span>
+          <span class="sb-stat-badge timeout-badge">
+            <span class="sb-stat-icon">⏸</span>
+            T/O: <strong id="team2-timeouts">{{ game.team2.timeouts }}</strong>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Game Over Banner -->
+    <div class="sb-gameover-banner" id="gameover-banner" style="display:none">
+      🏆 GAME OVER – <span id="gameover-winner"></span> WINS!
+    </div>
+
+    <!-- Players Section -->
+    <div class="sb-players-section">
+      <div class="sb-players-col" id="sb-players-team1">
+        <h3 class="sb-players-title" id="players-team1-title">{{ game.team1.name }} Roster</h3>
+        <div class="sb-player-list" id="player-list-team1">
+          {% for player in game.team1.players %}
+          <div class="sb-player-row">
+            <span class="sb-player-number">#{{ player.number }}</span>
+            <span class="sb-player-name">{{ player.name }}</span>
+            <span class="sb-player-fouls">{{ player.fouls }} fls</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="sb-players-col" id="sb-players-team2">
+        <h3 class="sb-players-title" id="players-team2-title">{{ game.team2.name }} Roster</h3>
+        <div class="sb-player-list" id="player-list-team2">
+          {% for player in game.team2.players %}
+          <div class="sb-player-row">
+            <span class="sb-player-number">#{{ player.number }}</span>
+            <span class="sb-player-name">{{ player.name }}</span>
+            <span class="sb-player-fouls">{{ player.fouls }} fls</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="sb-footer">
+    <span>Applied Computing 1&2 – Basketball Scoreboard 2026</span>
+  </footer>
+
+  <script src="/static/js/scoreboard.js"></script>
+</body>
+</html>
