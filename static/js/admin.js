@@ -1,5 +1,5 @@
 /**
- * admin.js – Admin panel logic
+ * admin.js – Admin panel 
  * Aplied Computing 1&2 – Basketball Scoreboard
  */
 
@@ -79,15 +79,15 @@ function formatTime(totalSecs) {
 }
 
 /**
- * Animate the clock display element based on remaining seconds.
+ * Animate the clock display element based on remaining seconds for operator only.
  * Adds a tick pulse every second, switches to urgent/critical
- * colour states as time runs low.
+ * colour states as time runs low; red-5 secs remaining, yellow, green.
  */
 function animateClock(secs) {
   const el = document.getElementById('center-clock');
   if (!el) return;
 
-  // Remove all state classes first
+  // Remove all classes states
   el.classList.remove('tick', 'urgent', 'critical');
 
   // Force a reflow so re-adding the class re-triggers the animation
@@ -104,7 +104,7 @@ function animateClock(secs) {
   }
 }
 
-/** Strip all animation classes when the timer stops. */
+/** Turn off all animation from ticking clock */
 function resetClockClasses() {
   const el = document.getElementById('center-clock');
   if (el) el.classList.remove('tick', 'urgent', 'critical');
@@ -112,7 +112,7 @@ function resetClockClasses() {
 
 /**
  * Play a basketball buzzer sound using the Web Audio API.
- * Synthesises a loud two-tone horn (no external files needed).
+ * Synthesises a loud two-tone horn (Claude Opus 4.8) .
  */
 function playBuzzer() {
   try {
@@ -150,6 +150,7 @@ function playBuzzer() {
     // Clean up after playback
     setTimeout(() => ctx.close(), 2000);
   } catch (e) {
+    //** print warning */
     console.warn('Buzzer audio not supported:', e);
   }
 }
