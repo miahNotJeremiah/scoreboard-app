@@ -65,7 +65,7 @@ async function _startTimer() {
       timerRunning  = false;
       setTimerButtonState(false);
       resetClockClasses();
-      playBuzzer();   // 🔊 End-of-period buzzer
+      //playBuzzer();   // 🔊 End-of-period buzzer
       await postAPI('/api/timer', { running: false });
     }
   }, 1000);
@@ -112,48 +112,49 @@ function resetClockClasses() {
 
 /**
  * Play a basketball buzzer sound using the Web Audio API.
- * Synthesises a loud two-tone horn (Claude Opus 4.8) .
+ * Synthesises a loud two-tone horn (Claude Opus 4.8)
+ * NOTED -- JS FUNCTION PLAYBUZZER DISABLED DUE TO INCOMPATIBILITY.
  */
-function playBuzzer() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Main buzzer tone – low square wave
-    const osc1 = ctx.createOscillator();
-    osc1.type = 'square';
-    osc1.frequency.setValueAtTime(220, ctx.currentTime);       // A3
-    osc1.frequency.setValueAtTime(196, ctx.currentTime + 0.5); // G3
-
-    // Second harmonic – slightly detuned for thickness
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'sawtooth';
-    osc2.frequency.setValueAtTime(223, ctx.currentTime);
-    osc2.frequency.setValueAtTime(199, ctx.currentTime + 0.5);
-
-    // Gain envelope – ramp up, sustain, fade out
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.05);  // attack
-    gain.gain.setValueAtTime(0.35, ctx.currentTime + 1.0);            // sustain
-    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);      // release
-
-    // Connect: oscillators → gain → speakers
-    osc1.connect(gain);
-    osc2.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc1.start(ctx.currentTime);
-    osc2.start(ctx.currentTime);
-    osc1.stop(ctx.currentTime + 1.5);
-    osc2.stop(ctx.currentTime + 1.5);
-
-    // Clean up after playback
-    setTimeout(() => ctx.close(), 2000);
-  } catch (e) {
-    //** print warning */
-    console.warn('Buzzer audio not supported:', e);
-  }
-}
+//function playBuzzer() {
+//  try {
+//    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+//
+//    // Main buzzer tone – low square wave
+//    const osc1 = ctx.createOscillator();
+//    osc1.type = 'square';
+//    osc1.frequency.setValueAtTime(220, ctx.currentTime);       // A3
+//    osc1.frequency.setValueAtTime(196, ctx.currentTime + 0.5); // G3
+//
+//    // Second harmonic – slightly detuned for thickness
+//    const osc2 = ctx.createOscillator();
+//    osc2.type = 'sawtooth';
+//    osc2.frequency.setValueAtTime(223, ctx.currentTime);
+//    osc2.frequency.setValueAtTime(199, ctx.currentTime + 0.5);
+//
+//    // Gain envelope – ramp up, sustain, fade out
+//    const gain = ctx.createGain();
+//    gain.gain.setValueAtTime(0, ctx.currentTime);
+//    gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.05);  // attack
+//    gain.gain.setValueAtTime(0.35, ctx.currentTime + 1.0);            // sustain
+//    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);      // release
+//
+//    // Connect: oscillators → gain → speakers
+//    osc1.connect(gain);
+//    osc2.connect(gain);
+//    gain.connect(ctx.destination);
+//
+//    osc1.start(ctx.currentTime);
+//    osc2.start(ctx.currentTime);
+//    osc1.stop(ctx.currentTime + 1.5);
+//    osc2.stop(ctx.currentTime + 1.5);
+//
+//    // Clean up after playback
+//    setTimeout(() => ctx.close(), 2000);
+//  } catch (e) {
+//    //** print warning */
+//    console.warn('Buzzer audio not supported:', e);
+//  }
+//}
 
 /** Swap the toggle button between green ▶ and amber ⏸ */
 function setTimerButtonState(running) {
