@@ -40,7 +40,7 @@ game_state = {
     "period_label": "Q1"
 }
 
-#Admin Login 
+#Admin Login Set Password (Raw Text) 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password123"
 
