@@ -47,12 +47,10 @@ ADMIN_PASSWORD = "password123"
 
 
 # Login Helper
-
 def is_logged_in():
     return session.get("logged_in", False)
 
-# Login/Scoreboard Routes
-
+# Login/Scoreboard Routes in use of specific values
 @app.route("/")
 def index():
     """Redirect to login or scoreboard."""
