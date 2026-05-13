@@ -1,6 +1,6 @@
 /**
  * admin.js – Admin panel logic
- * Applied Computing 1&2 – Basketball Scoreboard
+ * Aplied Computing 1&2 – Basketball Scoreboard
  */
 
 // ── Timer state ──────────────────────────────────────────────
