@@ -13,7 +13,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "scoreboard_secret_key_2026"
 
-# In-memory game state (resets on refresh )
+# In-memmory game state (resets on refresh )
 #note to self -- all functions back to state
 game_state = {
     "team1": {
@@ -40,17 +40,19 @@ game_state = {
     "period_label": "Q1"
 }
 
-#Admin Login Set Password (Raw Text) 
+#Admin Login 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "password123"
 
 
 
 # Login Helper
+
 def is_logged_in():
     return session.get("logged_in", False)
 
-# Login/Scoreboard Routes in use of specific values
+# Login/Scoreboard Routes
+
 @app.route("/")
 def index():
     """Redirect to login or scoreboard."""
