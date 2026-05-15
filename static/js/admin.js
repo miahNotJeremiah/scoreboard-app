@@ -1,6 +1,6 @@
 /**
- * admin.js – Admin panel 
- * Aplied Computing 1&2 – Basketball Scoreboard
+ * admin.js – Admin panel logic
+ * Applied Computing 1&2 – Basketball Scoreboard
  */
 
 // ── Timer state ──────────────────────────────────────────────
@@ -65,7 +65,7 @@ async function _startTimer() {
       timerRunning  = false;
       setTimerButtonState(false);
       resetClockClasses();
-      //playBuzzer();   // 🔊 End-of-period buzzer
+      playBuzzer();   // 🔊 End-of-period buzzer
       await postAPI('/api/timer', { running: false });
     }
   }, 1000);
@@ -79,15 +79,15 @@ function formatTime(totalSecs) {
 }
 
 /**
- * Animate the clock display element based on remaining seconds for operator only.
+ * Animate the clock display element based on remaining seconds.
  * Adds a tick pulse every second, switches to urgent/critical
- * colour states as time runs low; red-5 secs remaining, yellow, green.
+ * colour states as time runs low.
  */
 function animateClock(secs) {
   const el = document.getElementById('center-clock');
   if (!el) return;
 
-  // Remove all classes states
+  // Remove all state classes first
   el.classList.remove('tick', 'urgent', 'critical');
 
   // Force a reflow so re-adding the class re-triggers the animation
@@ -104,7 +104,7 @@ function animateClock(secs) {
   }
 }
 
-/** Turn off all animation from ticking clock */
+/** Strip all animation classes when the timer stops. */
 function resetClockClasses() {
   const el = document.getElementById('center-clock');
   if (el) el.classList.remove('tick', 'urgent', 'critical');
@@ -112,49 +112,47 @@ function resetClockClasses() {
 
 /**
  * Play a basketball buzzer sound using the Web Audio API.
- * Synthesises a loud two-tone horn (Claude Opus 4.8)
- * NOTED -- JS FUNCTION PLAYBUZZER DISABLED DUE TO INCOMPATIBILITY.
+ * Synthesises a loud two-tone horn (no external files needed).
  */
-//function playBuzzer() {
-//  try {
-//    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-//
-//    // Main buzzer tone – low square wave
-//    const osc1 = ctx.createOscillator();
-//    osc1.type = 'square';
-//    osc1.frequency.setValueAtTime(220, ctx.currentTime);       // A3
-//    osc1.frequency.setValueAtTime(196, ctx.currentTime + 0.5); // G3
-//
-//    // Second harmonic – slightly detuned for thickness
-//    const osc2 = ctx.createOscillator();
-//    osc2.type = 'sawtooth';
-//    osc2.frequency.setValueAtTime(223, ctx.currentTime);
-//    osc2.frequency.setValueAtTime(199, ctx.currentTime + 0.5);
-//
-//    // Gain envelope – ramp up, sustain, fade out
-//    const gain = ctx.createGain();
-//    gain.gain.setValueAtTime(0, ctx.currentTime);
-//    gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.05);  // attack
-//    gain.gain.setValueAtTime(0.35, ctx.currentTime + 1.0);            // sustain
-//    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);      // release
-//
-//    // Connect: oscillators → gain → speakers
-//    osc1.connect(gain);
-//    osc2.connect(gain);
-//    gain.connect(ctx.destination);
-//
-//    osc1.start(ctx.currentTime);
-//    osc2.start(ctx.currentTime);
-//    osc1.stop(ctx.currentTime + 1.5);
-//    osc2.stop(ctx.currentTime + 1.5);
-//
-//    // Clean up after playback
-//    setTimeout(() => ctx.close(), 2000);
-//  } catch (e) {
-//    //** print warning */
-//    console.warn('Buzzer audio not supported:', e);
-//  }
-//}
+function playBuzzer() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Main buzzer tone – low square wave
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(220, ctx.currentTime);       // A3
+    osc1.frequency.setValueAtTime(196, ctx.currentTime + 0.5); // G3
+
+    // Second harmonic – slightly detuned for thickness
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(223, ctx.currentTime);
+    osc2.frequency.setValueAtTime(199, ctx.currentTime + 0.5);
+
+    // Gain envelope – ramp up, sustain, fade out
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.05);  // attack
+    gain.gain.setValueAtTime(0.35, ctx.currentTime + 1.0);            // sustain
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);      // release
+
+    // Connect: oscillators → gain → speakers
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start(ctx.currentTime);
+    osc2.start(ctx.currentTime);
+    osc1.stop(ctx.currentTime + 1.5);
+    osc2.stop(ctx.currentTime + 1.5);
+
+    // Clean up after playback
+    setTimeout(() => ctx.close(), 2000);
+  } catch (e) {
+    console.warn('Buzzer audio not supported:', e);
+  }
+}
 
 /** Swap the toggle button between green ▶ and amber ⏸ */
 function setTimerButtonState(running) {
