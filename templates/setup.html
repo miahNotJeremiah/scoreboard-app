@@ -4,265 +4,120 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Game Setup – Basketball Scoreboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css"/>
 </head>
-<body class="setup-page">
+<body>
 
-  <header class="admin-header">
-    <div class="admin-header-inner">
-      <span class="admin-logo">🏀 ScoreBoard Pro</span>
-      <nav class="admin-nav">
-        <a href="/admin" class="btn btn-ghost btn-sm">← Admin Panel</a>
-        <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
-      </nav>
-    </div>
-  </header>
+  <h1>Game Setup</h1>
+  <nav>
+    <a href="/admin">← Admin Panel</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+  <p>Configure teams and players before the game starts.</p>
 
-  <main class="setup-main">
-    <div class="setup-container">
-      <h1 class="setup-title">Game Setup</h1>
-      <p class="setup-subtitle">Configure teams and players before the game starts.</p>
+  <hr>
 
-      <form method="POST" action="/setup" class="setup-form">
+  <form method="POST" action="/setup">
 
-        <div class="setup-teams-grid">
+    <div class="setup-teams-grid">
 
-          <!-- ── Team 1 ── -->
-          <div class="setup-team-card">
-            <h2 class="setup-team-heading">Team 1</h2>
+      <!-- Team 1 -->
+      <div>
+        <h2>Team 1</h2>
+        <p>
+          <label for="team1_name">Team Name:</label><br>
+          <input id="team1_name" type="text" name="team1_name" value="{{ game.team1.name }}" placeholder="Team Alpha" required />
+        </p>
+        <p>
+          <label for="team1_color">Team Colour:</label>
+          <input id="team1_color" type="color" name="team1_color" value="{{ game.team1.color }}" />
+        </p>
 
-            <div class="form-group">
-              <label for="team1_name">Team Name</label>
-              <input id="team1_name" type="text" name="team1_name" value="{{ game.team1.name }}" placeholder="Team Alpha" required />
-            </div>
-
-            <div class="form-group">
-              <label for="team1_color">Team Colour</label>
-              <div class="color-row">
-                <input id="team1_color" type="color" name="team1_color" value="{{ game.team1.color }}" />
-                <span class="color-hint">Shown on scoreboard</span>
-              </div>
-            </div>
-
-            <h3 class="setup-players-heading">Players (up to 5)</h3>
-            {% for i in range(1, 6) %}
-            <div class="player-setup-row">
-              <input type="text" name="team1_player{{ i }}"
-                     value="{{ game.team1.players[i-1].name if game.team1.players|length >= i else '' }}"
-                     placeholder="Player {{ i }} name"
-                     id="t1p{{ i }}-name" />
-              <input type="text" name="team1_number{{ i }}"
-                     value="{{ game.team1.players[i-1].number if game.team1.players|length >= i else '' }}"
-                     placeholder="#" class="number-input"
-                     id="t1p{{ i }}-number" />
-            </div>
-            {% endfor %}
-          </div>
-
-          <!-- ── Team 2 ── -->
-          <div class="setup-team-card">
-            <h2 class="setup-team-heading">Team 2</h2>
-
-            <div class="form-group">
-              <label for="team2_name">Team Name</label>
-              <input id="team2_name" type="text" name="team2_name" value="{{ game.team2.name }}" placeholder="Team Beta" required />
-            </div>
-
-            <div class="form-group">
-              <label for="team2_color">Team Colour</label>
-              <div class="color-row">
-                <input id="team2_color" type="color" name="team2_color" value="{{ game.team2.color }}" />
-                <span class="color-hint">Shown on scoreboard</span>
-              </div>
-            </div>
-
-            <h3 class="setup-players-heading">Players (up to 5)</h3>
-            {% for i in range(1, 6) %}
-            <div class="player-setup-row">
-              <input type="text" name="team2_player{{ i }}"
-                     value="{{ game.team2.players[i-1].name if game.team2.players|length >= i else '' }}"
-                     placeholder="Player {{ i }} name"
-                     id="t2p{{ i }}-name" />
-              <input type="text" name="team2_number{{ i }}"
-                     value="{{ game.team2.players[i-1].number if game.team2.players|length >= i else '' }}"
-                     placeholder="#" class="number-input"
-                     id="t2p{{ i }}-number" />
-            </div>
-            {% endfor %}
-          </div>
-
+        <h3>Players (up to 5)</h3>
+        {% for i in range(1, 6) %}
+        <div class="player-setup-row">
+          <input type="text" name="team1_player{{ i }}"
+                 value="{{ game.team1.players[i-1].name if game.team1.players|length >= i else '' }}"
+                 placeholder="Player {{ i }} name"
+                 id="t1p{{ i }}-name" />
+          <input type="text" name="team1_number{{ i }}"
+                 value="{{ game.team1.players[i-1].number if game.team1.players|length >= i else '' }}"
+                 placeholder="#" class="number-input"
+                 id="t1p{{ i }}-number" />
         </div>
+        {% endfor %}
+      </div>
 
-        <!-- ══ Settings Panels ══ -->
-        <div class="setup-settings-grid">
+      <!-- Team 2 -->
+      <div>
+        <h2>Team 2</h2>
+        <p>
+          <label for="team2_name">Team Name:</label><br>
+          <input id="team2_name" type="text" name="team2_name" value="{{ game.team2.name }}" placeholder="Team Beta" required />
+        </p>
+        <p>
+          <label for="team2_color">Team Colour:</label>
+          <input id="team2_color" type="color" name="team2_color" value="{{ game.team2.color }}" />
+        </p>
 
-          <!-- Audio Feedback -->
-          <div class="settings-card">
-            <h2 class="settings-heading"><span class="settings-icon">🔊</span> Audio Feedback</h2>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <span class="setting-name">END OF PERIOD BUZZER</span>
-                <span class="setting-desc">High-decibel alert for period expiration.</span>
-              </div>
-              <label class="toggle" id="toggle-buzzer">
-                <input type="checkbox" name="buzzer" value="on" {{ 'checked' if game.get('settings', {}).get('buzzer', True) else '' }} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <span class="setting-name">REFEREE WHISTLE SFX</span>
-                <span class="setting-desc">Audible chime when a foul is logged.</span>
-              </div>
-              <label class="toggle" id="toggle-whistle">
-                <input type="checkbox" name="whistle" value="on" {{ 'checked' if game.get('settings', {}).get('whistle', False) else '' }} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <span class="setting-name">SHOT CLOCK WARNING</span>
-                <span class="setting-desc">Beep during the final 5 seconds of clock.</span>
-              </div>
-              <label class="toggle" id="toggle-shotclock">
-                <input type="checkbox" name="shot_clock_warning" value="on" {{ 'checked' if game.get('settings', {}).get('shot_clock_warning', True) else '' }} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Visual Interface -->
-          <div class="settings-card">
-            <h2 class="settings-heading"><span class="settings-icon">👁</span> Visual Interface</h2>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <span class="setting-name">HIGH CONTRAST MODE</span>
-                <span class="setting-desc">Maximum readability for stadium lights.</span>
-              </div>
-              <label class="toggle" id="toggle-contrast">
-                <input type="checkbox" name="high_contrast" value="on" {{ 'checked' if game.get('settings', {}).get('high_contrast', False) else '' }} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-
-            <div class="setting-row">
-              <div class="setting-info">
-                <span class="setting-name">DEFAULT PERIOD DURATION</span>
-              </div>
-            </div>
-            <div class="duration-selector">
-              <label class="duration-option">
-                <input type="radio" name="period_duration" value="10" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '10' else '' }} />
-                <span class="duration-label">10:00</span>
-              </label>
-              <label class="duration-option">
-                <input type="radio" name="period_duration" value="12" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '12' else '' }} />
-                <span class="duration-label">12:00</span>
-              </label>
-              <label class="duration-option">
-                <input type="radio" name="period_duration" value="15" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '15' else '' }} />
-                <span class="duration-label">15:00</span>
-              </label>
-              <label class="duration-option">
-                <input type="radio" name="period_duration" value="custom" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == 'custom' else '' }} />
-                <span class="duration-label">CUSTOM</span>
-              </label>
-            </div>
-
-            <div class="setting-row" style="margin-top:14px">
-              <div class="setting-info">
-                <span class="setting-name">PLAYER PORTRAITS</span>
-                <span class="setting-desc">Show player faces in roster cards.</span>
-              </div>
-              <label class="toggle" id="toggle-portraits">
-                <input type="checkbox" name="player_portraits" value="on" {{ 'checked' if game.get('settings', {}).get('player_portraits', True) else '' }} />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-
+        <h3>Players (up to 5)</h3>
+        {% for i in range(1, 6) %}
+        <div class="player-setup-row">
+          <input type="text" name="team2_player{{ i }}"
+                 value="{{ game.team2.players[i-1].name if game.team2.players|length >= i else '' }}"
+                 placeholder="Player {{ i }} name"
+                 id="t2p{{ i }}-name" />
+          <input type="text" name="team2_number{{ i }}"
+                 value="{{ game.team2.players[i-1].number if game.team2.players|length >= i else '' }}"
+                 placeholder="#" class="number-input"
+                 id="t2p{{ i }}-number" />
         </div>
+        {% endfor %}
+      </div>
 
-        <!-- ══ Bottom Row: Sync + Version ══ -->
-        <div class="setup-settings-grid" style="margin-top:20px">
-
-          <!-- Scoreboard Sync -->
-          <div class="settings-card settings-card-row">
-            <div class="sync-visual">
-              <div class="sync-display">
-                <span class="sync-digit">8</span><span class="sync-colon">:</span><span class="sync-digit">8</span>
-              </div>
-            </div>
-            <div class="sync-info">
-              <h3 class="sync-title">Scoreboard Sync</h3>
-              <p class="sync-desc">Connect ScoreBoard Pro to the venue's physical scoreboard hardware via Wi-Fi or DSI link for real-time synchronization.</p>
-              <a href="#" class="sync-link" onclick="alert('External device management coming soon!')">🔗 Manage External Devices</a>
-            </div>
-          </div>
-
-          <!-- Version / Pro Edition -->
-          <div class="settings-card version-card">
-            <div class="version-header">
-              <span class="version-number">V4.2</span>
-              <span class="version-badge">PRO EDITION</span>
-            </div>
-            <p class="version-desc">Your database is currently tracking <strong>{{ game.team1.players|length + game.team2.players|length }}</strong> active rosters and game stats for this session.</p>
-            <div class="version-footer">
-              <span class="version-backup">Last Backup: just now</span>
-              <span class="version-sync-badge">CLOUD SYNCED</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="setup-submit">
-          <button type="submit" class="btn btn-primary btn-lg" id="save-setup-btn">
-            💾 Save &amp; Start Game
-          </button>
-        </div>
-
-      </form>
     </div>
 
-    <!-- ══ Status Bar ══ -->
-    <div class="status-bar">
-      <div class="status-item">
-        <span class="status-icon">📶</span>
-        <div class="status-text">
-          <span class="status-label">SYSTEM STATUS</span>
-          <span class="status-value status-online">ONLINE</span>
-        </div>
-      </div>
-      <div class="status-item">
-        <span class="status-icon">⚡</span>
-        <div class="status-text">
-          <span class="status-label">LATENCE (SYNC)</span>
-          <span class="status-value">12ms</span>
-        </div>
-      </div>
-      <div class="status-item">
-        <span class="status-icon">☁️</span>
-        <div class="status-text">
-          <span class="status-label">AUTO-ARCHIVE</span>
-          <span class="status-value status-ready">READY</span>
-        </div>
-      </div>
-      <div class="status-item">
-        <span class="status-icon">👤</span>
-        <div class="status-text">
-          <span class="status-label">OPERATOR ID</span>
-          <span class="status-value">{{ session.get('username', 'ADMIN') | upper }}</span>
-        </div>
-      </div>
-    </div>
+    <hr>
 
-  </main>
+    <h2>Settings</h2>
+
+    <p>
+      <label>
+        <input type="checkbox" name="buzzer" value="on" {{ 'checked' if game.get('settings', {}).get('buzzer', True) else '' }} />
+        End of period buzzer
+      </label>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" name="whistle" value="on" {{ 'checked' if game.get('settings', {}).get('whistle', False) else '' }} />
+        Referee whistle SFX on fouls
+      </label>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" name="shot_clock_warning" value="on" {{ 'checked' if game.get('settings', {}).get('shot_clock_warning', True) else '' }} />
+        Shot clock warning (final 5s)
+      </label>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" name="high_contrast" value="on" {{ 'checked' if game.get('settings', {}).get('high_contrast', False) else '' }} />
+        High contrast mode
+      </label>
+    </p>
+
+    <p>
+      Default period duration:
+      <label><input type="radio" name="period_duration" value="10" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '10' else '' }} /> 10:00</label>
+      <label><input type="radio" name="period_duration" value="12" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '12' else '' }} /> 12:00</label>
+      <label><input type="radio" name="period_duration" value="15" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == '15' else '' }} /> 15:00</label>
+      <label><input type="radio" name="period_duration" value="custom" {{ 'checked' if game.get('settings', {}).get('period_duration', '10') == 'custom' else '' }} /> Custom</label>
+    </p>
+
+    <hr>
+
+    <button type="submit" id="save-setup-btn">💾 Save &amp; Start Game</button>
+
+  </form>
 
 </body>
 </html>
